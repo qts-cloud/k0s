@@ -2,37 +2,55 @@ module "k0s-cluster" {
   source = "../modules/lxc-cluster"
 
   config = {
-    hostname_prefix = "k0s"
-    targets         = ["hp-01", "hp-02", "hp-03"]
+    hostname_prefix  = "k0s"
+    public_key_path  = "~/.ssh/id_rsa.pub"
+    private_key_path = "~/.ssh/id_rsa"
 
-    node = {
-      cores  = 2
-      memory = 2048
-      swap   = 0
-      start  = true
-      tags   = "lxc, terraform"
-
-      ostype          = "debian"
-      ostemplate      = "local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst"
-      password        = "change-me"
-      ssh_public_keys = data.local_file.public_key.content
-
-      unprivileged    = true
-      features = {
-        nesting = true
+    targets = [
+      {
+        host = "hp-01"
+        network = [
+          { name = "eth0", bridge = "vmbr0", ip = "192.168.1.61/24", gw = "192.168.1.1", hwaddr = "BC:24:11:1E:84:BA" },
+          { name = "eth1", bridge = "vmbr1", ip = "10.100.10.101/24" }
+        ]
+      },
+      {
+        host = "hp-02"
+        network = [
+          { name = "eth0", bridge = "vmbr0", ip = "192.168.1.62/24", gw = "192.168.1.1", hwaddr = "BC:24:11:9F:EC:D8" },
+          { name = "eth1", bridge = "vmbr1", ip = "10.100.10.102/24" }
+        ]
+      },
+      {
+        host = "hp-03"
+        network = [
+          { name = "eth0", bridge = "vmbr0", ip = "192.168.1.63/24", gw = "192.168.1.1", hwaddr = "BC:24:11:E9:E7:A6" },
+          { name = "eth1", bridge = "vmbr1", ip = "10.100.10.103/24" }
+        ]
       }
+    ]
+
+    lxc_config = {
+      ostemplate = "local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst"
+
+      cores  = 4
+      memory = 4096
+      swap   = 0
 
       rootfs = {
-        storage = "pve_storage"
+        storage = "local-lvm"
         size    = "32G"
       }
 
-      network = [{
-        name   = "eth0"
-        bridge = "vmbr0"
-        ip     = "dhcp"
-      }]
-    }
+      start  = true
+      onboot = true
+      tags   = "lxc;terraform"
 
+      unprivileged = false
+
+      features = {
+        nesting = true
+      }
+    }
   }
 }

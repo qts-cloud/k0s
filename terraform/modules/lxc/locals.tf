@@ -66,7 +66,7 @@ locals {
 
   onboot     = try(coalesce(var.config.onboot), false)
   ostype     = try(coalesce(var.config.ostype), null)
-  password   = sensitive(try(coalesce(var.config.password), null))
+  password   = sensitive(try(coalesce(var.config.password), random_password.root.0.result))
   pool       = try(coalesce(var.config.pool), null)
   protection = try(coalesce(var.config.protection), false)
   restore    = try(coalesce(var.config.restore), null)
@@ -89,4 +89,11 @@ locals {
   unique          = try(coalesce(var.config.unique), null)
   unprivileged    = try(coalesce(var.config.unprivileged), true)
   vmid            = try(coalesce(var.config.vmid), 0)
+
+  remote_exec = [
+    for config in flatten([try(coalesce(var.config.remote_exec), [])]) : {
+      size    = try(coalesce(config.size), null)
+      storage = try(coalesce(config.storage), null)
+    }
+  ]
 }

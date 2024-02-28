@@ -27,7 +27,7 @@ variable "config" {
     description = optional(string)
     # (Optional) An object for allowing the container to access advanced features.
     features = optional(object({
-       # (Optional) A boolean for enabling FUSE mounts.
+      # (Optional) A boolean for enabling FUSE mounts.
       fuse = optional(bool)
       # (Optional) A boolean for enabling the keyctl() system call.
       keyctl = optional(bool)
@@ -54,8 +54,9 @@ variable "config" {
     lock = optional(string)
     # (Optional) A number containing the amount of RAM to assign to the container (in MB).
     memory = optional(number)
+
     # (Optional) An object for defining a volume to use as a container mount point. Can be specified multiple times.
-    mountpoint = optional(object({
+    mountpoint = optional(list(object({
       # (Required) The path to the mount point as seen from inside the container. The path must not contain symlinks for security reasons.
       mp = string
       # (Required) Size of the underlying volume. Must end in T, G, M, or K (e.g. "1T", "1G", "1024M" , "1048576K"). Note that this is a read only value.
@@ -76,9 +77,8 @@ variable "config" {
       replicate = optional(bool)
       # (Optional) A boolean for marking the volume as available on all nodes. Default is false.
       shared = optional(bool)
-    })) 
-      
-    
+    })))
+
     # (Optional) An object defining a network interface for the container. Can be specified multiple times.
     network = optional(list(object({
       # (Required)  = optional(string) The name of the network interface as seen from inside the container (e.g. "eth0").
@@ -104,7 +104,7 @@ variable "config" {
       # (Optional) A number that specifies the VLAN tag of the network interface. Automatically determined if not set.
       tag = optional(string)
     })))
-    
+
     # (Optional) A boolean that determines if the container will start on boot. Default is false.
     onboot = optional(bool)
     # (Optional) The operating system type, used by LXC to set up and configure the container. Automatically determined if not set.
@@ -124,9 +124,9 @@ variable "config" {
       # (Required) A string containing the volume , directory, or device to be mounted into the container (at the path specified by mp). E.g. local-lvm, local-zfs, local etc.
       storage = string
     }))
-    
+
     # (Optional) The DNS server IP address used by the container. If neither nameserver nor searchdomain are specified, the values of the Proxmox host will be used by default.
-    nameserver = optional(string) 
+    nameserver = optional(string)
     # (Optional) Sets the DNS search domains for the container. If neither nameserver nor searchdomain are specified, the values of the Proxmox host will be used by default.
     searchdomain = optional(string)
     # (Optional) Multi-line string of SSH public keys that will be added to the container. Can be defined using heredoc syntax.
