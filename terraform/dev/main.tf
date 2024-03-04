@@ -4,8 +4,8 @@ module "k0s-cluster" {
 
   config = {
     hostname_prefix = "k0s"
-    public_key      = var.public_key
-    private_key     = var.private_key
+    public_key      = var.ssh_public_key
+    private_key     = var.ssh_private_key
 
     targets = [
       {
