@@ -1,10 +1,11 @@
 module "k0s-cluster" {
-  source = "../modules/lxc-cluster"
+  source  = "app.terraform.io/qts/lxc-cluster/proxmox"
+  version = "1.0.2"
 
   config = {
-    hostname_prefix  = "k0s"
-    public_key_path  = "~/.ssh/id_rsa.pub"
-    private_key_path = "~/.ssh/id_rsa"
+    hostname_prefix = "k0s"
+    public_key      = var.public_key
+    private_key     = var.private_key
 
     targets = [
       {

@@ -1,5 +1,5 @@
 provider "proxmox" {
-  pm_api_url      = "https://qnap.qts.one:8006/api2/json"
+  pm_api_url      = var.api_url
   pm_tls_insecure = true
   pm_parallel     = 4
   pm_timeout      = 300
