@@ -47,6 +47,8 @@ module "k0s-cluster" {
       onboot = true
       tags   = "lxc;terraform"
 
+      unprivileged = false
+
       features = {
         nesting = true
       }
