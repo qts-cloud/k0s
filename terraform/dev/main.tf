@@ -1,6 +1,6 @@
 module "k0s-cluster" {
   source  = "app.terraform.io/qts/lxc-cluster/proxmox"
-  version = "1.0.2"
+  version = "1.0.3"
 
   config = {
     hostname_prefix = "k0s"
@@ -32,7 +32,7 @@ module "k0s-cluster" {
     ]
 
     lxc_config = {
-      ostemplate = "local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst"
+      ostemplate = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
 
       cores  = 4
       memory = 4096
