@@ -1,57 +1,48 @@
 apiVersion: k0sctl.k0sproject.io/v1beta1
 kind: Cluster
 metadata:
-  name: k0s-cluster
+  name: k0s-cluster-prod
+  user: admin
 spec:
   hosts:
-  - hostname: k0s-1.lan
+  - ssh:
+      address: k0s-prod-1
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa
     role: controller+worker
     noTaints: true
-    os: debian
-    environment: {}
     privateInterface: eth1
-    privateAddress: 10.100.10.101
-    ssh:
-      address: 192.168.1.61
+    privateAddress: 10.10.2.201
+  - ssh:
+      address: k0s-prod-2
       user: root
       port: 22
       keyPath: ~/.ssh/id_rsa
-  - hostname: k0s-2.lan
     role: worker
-    os: debian
     privateInterface: eth1
-    privateAddress: 10.100.10.102
-    ssh:
-      address: 192.168.1.62
+    privateAddress: 10.10.2.202
+  - ssh:
+      address: k0s-prod-3
       user: root
       port: 22
       keyPath: ~/.ssh/id_rsa
-  - hostname: k0s-3.lan
     role: worker
-    os: debian
     privateInterface: eth1
-    privateAddress: 10.100.10.103
-    ssh:
-      address: 192.168.1.63
-      user: root
-      port: 22
-      keyPath: ~/.ssh/id_rsa
+    privateAddress: 10.10.2.203
   k0s:
-    version: v1.29.2+k0s.0
-    versionChannel: stable
-    dynamicConfig: false
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
       metadata:
-        name: k0s-dev
+        name: k0s-prod
       spec:
         api:
-          address: 10.100.10.101
+          address: 10.10.2.201
           k0sApiPort: 9443
           port: 6443
           sans:
-            - 10.100.10.101
+            - 10.10.2.201
         installConfig:
           users:
             etcdUser: etcd
@@ -63,9 +54,6 @@ spec:
           adminPort: 8133
           agentPort: 8132
         network:
-          provider: kuberouter
-          podCIDR: 10.0.0.0/16
-          serviceCIDR: 10.1.0.0/16
           kubeProxy:
             disabled: false
             mode: iptables
@@ -74,18 +62,12 @@ spec:
             mtu: 0
             peerRouterASNs: ""
             peerRouterIPs: ""
+          podCIDR: 10.244.0.0/16
+          provider: kuberouter
+          serviceCIDR: 10.96.0.0/12
         podSecurityPolicy:
           defaultPolicy: 00-k0s-privileged
         storage:
           type: etcd
         telemetry:
           enabled: true
-    # config:
-    #   spec:
-    #     network:
-    #       provider: calico
-    #       nodeLocalLoadBalancing:
-    #         enabled: true
-    #         type: EnvoyProxy
-    #     telemetry:
-    #       enabled: false

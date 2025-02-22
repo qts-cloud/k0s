@@ -1,0 +1,73 @@
+apiVersion: k0sctl.k0sproject.io/v1beta1
+kind: Cluster
+metadata:
+  name: k0s-cluster-dev
+  user: admin
+spec:
+  hosts:
+  - ssh:
+      address: k0s-dev-1
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa
+    role: controller+worker
+    noTaints: true
+    privateInterface: eth1
+    privateAddress: 10.10.2.101
+  - ssh:
+      address: k0s-dev-2
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa
+    role: worker
+    privateInterface: eth1
+    privateAddress: 10.10.2.102
+  - ssh:
+      address: k0s-dev-3
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa
+    role: worker
+    privateInterface: eth1
+    privateAddress: 10.10.2.103
+  k0s:
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: Cluster
+      metadata:
+        name: k0s-dev
+      spec:
+        api:
+          address: 10.10.2.101
+          k0sApiPort: 9443
+          port: 6443
+          sans:
+            - 10.10.2.101
+        installConfig:
+          users:
+            etcdUser: etcd
+            kineUser: kube-apiserver
+            konnectivityUser: konnectivity-server
+            kubeAPIserverUser: kube-apiserver
+            kubeSchedulerUser: kube-scheduler
+        konnectivity:
+          adminPort: 8133
+          agentPort: 8132
+        network:
+          kubeProxy:
+            disabled: false
+            mode: iptables
+          kuberouter:
+            autoMTU: true
+            mtu: 0
+            peerRouterASNs: ""
+            peerRouterIPs: ""
+          podCIDR: 10.244.0.0/16
+          provider: kuberouter
+          serviceCIDR: 10.96.0.0/12
+        podSecurityPolicy:
+          defaultPolicy: 00-k0s-privileged
+        storage:
+          type: etcd
+        telemetry:
+          enabled: true
