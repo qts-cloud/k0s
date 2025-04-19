@@ -1,48 +1,27 @@
 apiVersion: k0sctl.k0sproject.io/v1beta1
 kind: Cluster
 metadata:
-  name: k0s-cluster-dev
+  name: k0s-tm
   user: admin
 spec:
   hosts:
-  - ssh:
-      address: k0s-dev-1
-      user: root
-      port: 22
-      keyPath: ~/.ssh/id_rsa
-    role: controller+worker
-    noTaints: true
-    privateInterface: eth1
-    privateAddress: 10.10.2.101
-  - ssh:
-      address: k0s-dev-2
-      user: root
-      port: 22
-      keyPath: ~/.ssh/id_rsa
-    role: worker
-    privateInterface: eth1
-    privateAddress: 10.10.2.102
-  - ssh:
-      address: k0s-dev-3
-      user: root
-      port: 22
-      keyPath: ~/.ssh/id_rsa
-    role: worker
-    privateInterface: eth1
-    privateAddress: 10.10.2.103
+    - role: controller+worker
+      ssh:
+        address: 10.10.1.40
+        user: root
+        port: 22
+        keyPath: ~/.ssh/id_rsa
+      noTaints: true
   k0s:
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
       metadata:
-        name: k0s-dev
+        name: k0s-tm
       spec:
         api:
-          address: 10.10.2.101
           k0sApiPort: 9443
           port: 6443
-          sans:
-            - 10.10.2.101
         installConfig:
           users:
             etcdUser: etcd
@@ -70,4 +49,4 @@ spec:
         storage:
           type: etcd
         telemetry:
-          enabled: true
+          enabled: false
