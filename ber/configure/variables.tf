@@ -16,6 +16,7 @@ variable "github" {
     server_url       = optional(string, "https://github.com")
     application_id   = number
     installation_id  = number
+    client_secret    = string
     private_key_path = string
   })
 }

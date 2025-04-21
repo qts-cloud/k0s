@@ -45,6 +45,7 @@ locals {
       type                    = "github"
       url                     = "${var.github.server_url}/${var.github.organisation}"
       organisation            = var.github.organisation
+      clientSecret            = var.github.client_secret
       githubAppID             = var.github.application_id
       githubAppInstallationID = var.github.installation_id
       githubAppPrivateKey     = file(var.github.private_key_path)
